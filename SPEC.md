@@ -105,11 +105,14 @@ User Input (objective string)
 - [ ] Output is saved to `/outputs/` as a `.json` file
 - [ ] Works with either OpenAI (`gpt-4o`) or Anthropic (`claude-sonnet-4-6`) as the LLM Backend
 - [ ] Basic test coverage for schema validation and tool functions
+- [ ] Agent should ask clarifying questions if the objective is too vague
+- [ ] Difficulty should be inferred
 
 ---
 
 ## 5. Out of Scope (v1)
 
+- No batch mode(multiple objectives at once) yet. This may be implemented in future development.
 - No web UI (CLI only)
 - No vector store / RAG (keep it simple first)
 - No authentication
@@ -131,7 +134,3 @@ User Input (objective string)
 ---
 
 ## 7. Open Questions (resolve before coding)
-
-- [ ] Should the agent ask clarifying questions if the objective is too vague?
-- [ ] Should difficulty be inferred or accepted as a parameter?
-- [ ] Should we support batch mode (multiple objectives at once)?
