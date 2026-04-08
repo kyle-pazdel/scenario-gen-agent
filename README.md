@@ -1,7 +1,7 @@
 Load Context Prompt:
 "I'm building a LangChain cybersecurity scenario generation agent. Here is my AGENTS.md and SPEC.md - treat these as the source of truth for everything you generate. Do not deviate from the architecture, naming conventions, or stack decisions defined in these files."
 
-Generation Promts in order of use:
+Generation Prompts in order of use:
 
 Prompt 1 -
 "Using the input/output contracts in SPEC.md, generate `src/scenario_schema.py`.
@@ -12,3 +12,6 @@ Prompt 2.1 -
 
 Prompt 2.2 -
 "Ensure that the system prompt in `src/prompts.py` instructs the agent to use its tools (lookup, validate) before returning."
+
+Prompt 3 -
+"Generate `data/mitre_tactics.json` - a JSON object where each key is a MITRE ATT&CK tactic ID (e.g. `TA0001`) and each value is an object with `name` and `description` fields. Include all 14 enterprise tactics from TA0001 through TA 0043. This is seed data only - no code."
