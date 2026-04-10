@@ -9,7 +9,7 @@
 
 A LangChain agent (Python) that accepts a high-level cybersecurity training objective and generates a fully structured scenario spec - including attacker steps, defender tasks, tools involved, and difficulty metadata.
 
-This converts expert knowledge into deployable, structured training contetn at machine speed.
+This converts expert knowledge into deployable, structured training content at machine speed.
 
 ---
 
@@ -100,15 +100,15 @@ User Input (objective string)
 
 # 4. Acceptance Criteria
 
-- [ ] Agent accepts a plain-language objective and returns valid JSON
-- [ ] Output passes Pydantic validation against `ScenarioSpec`
-- [ ] MITRE ATT&CK tactic IDs are real and relevant (from seed data)
-- [ ] Both red team and blue team sections are populated
-- [ ] Output is saved to `/outputs/` as a `.json` file
-- [ ] Works with either OpenAI (`gpt-4o`) or Anthropic (`claude-sonnet-4-6`) as the LLM Backend
-- [ ] Basic test coverage for schema validation and tool functions
+- [x] Agent accepts a plain-language objective and returns valid JSON
+- [x] Output passes Pydantic validation against `ScenarioSpec`
+- [x] MITRE ATT&CK tactic IDs are real and relevant (from seed data)
+- [x] Both red team and blue team sections are populated
+- [x] Output is saved to `/outputs/` as a `.json` file
+- [x] Works with either OpenAI (`gpt-4o`) or Anthropic (`claude-sonnet-4-6`)
+- [x] Basic test coverage for schema validation and tool functions
+- [x] Difficulty is inferred from the objective
 - [ ] Agent should ask clarifying questions if the objective is too vague
-- [ ] Difficulty should be inferred
 
 ---
 
@@ -135,4 +135,11 @@ User Input (objective string)
 
 ---
 
-## 7. Open Questions (resolve before coding)
+## 7. Resolved Decisions
+
+- **Difficulty** — inferred by the LLM from the objective, not passed as a parameter
+- **Clarifying questions** — deferred to v2; agent proceeds with any objective as given
+- **Batch mode** — deferred to v2; noted in Out of Scope
+- **`validate_scenario` return format** — returns a JSON string with a `status`
+  field (`valid`, `invalid_schema`, `error`) rather than a plain string,
+  enabling structured error handling and agent self-correction
