@@ -1,3 +1,100 @@
+# Scenario Generation Agent
+
+A LangChain agent that accepts a plain-language cybersecurity training objective and returns a fully structured scenario spec as JSON — including attacker steps, defender tasks, MITRE ATT&CK tactics, relevant tools, environment details, and difficulty metadata.
+
+Think of it as an AI that can draft a cybersecurity training lab brief from a one-sentence prompt.
+
+---
+
+## Overview
+
+| | |
+|---|---|
+| **Language** | Python 3.11+ |
+| **Agent Framework** | LangChain / LangGraph (`create_react_agent`) |
+| **LLM** | OpenAI `gpt-4o` (default) · Anthropic `claude-sonnet-4-6` (alternate) |
+| **Structured Output** | Pydantic v2 (`ScenarioSpec`, `RedTeam`, `BlueTeam`, `Environment`) |
+| **Seed Data** | MITRE ATT&CK tactics JSON (local file) |
+| **Testing** | pytest (no LLM calls required) |
+
+---
+
+## How It Works
+
+```
+User Input (objective string)
+        │
+        ▼
+  ┌─────────────┐
+  │  LangChain  │  ← Uses OpenAI or Anthropic LLM
+  │    Agent    │
+  └──────┬──────┘
+         │ calls
+    ┌────┴─────────────────────┐
+    │         Tools            │
+    │  - lookup_mitre_tactic   │  ← looks up MITRE ATT&CK tactic by keyword
+    │  - validate_scenario     │  ← checks output against ScenarioSpec schema
+    │  - suggest_tools         │  ← returns relevant red/blue team tools
+    └──────────────────────────┘
+         │
+         ▼
+  Structured ScenarioSpec JSON
+         │
+         ▼
+  Saved to /outputs/{slug}.json
+```
+
+---
+
+## Quickstart
+
+1. **Clone and install dependencies**
+   ```zsh
+   python3 -m venv .venv && source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. **Configure environment variables**
+   ```zsh
+   cp .env.example .env   # then fill in your API keys
+   ```
+   ```
+   OPENAI_API_KEY=...
+   ANTHROPIC_API_KEY=...
+   LLM_BACKEND=openai      # or "anthropic"
+   LLM_MODEL=gpt-4o        # or "claude-sonnet-4-6"
+   ```
+
+3. **Run the agent**
+   ```zsh
+   # Default objective
+   python -m src.agent
+
+   # Custom objective
+   python -m src.agent "Teach a SOC analyst to detect a supply chain attack targeting Linux servers."
+   ```
+   Output is saved to `outputs/<scenario-slug>.json`.
+
+4. **Run the tests** (no API key required)
+   ```zsh
+   PYTHONPATH=. pytest tests/ -v
+   ```
+
+---
+
+## Project Structure
+
+| File | Purpose |
+|---|---|
+| `src/agent.py` | Agent initialisation and `run(objective: str)` entrypoint |
+| `src/scenario_schema.py` | Pydantic v2 models — `ScenarioSpec`, `RedTeam`, `BlueTeam`, `Environment` |
+| `src/prompts.py` | All prompt templates (`SYSTEM_PROMPT`, `SCENARIO_GENERATION_PROMPT`) |
+| `src/tools/scenario_tools.py` | LangChain `@tool` functions the agent can call |
+| `data/mitre_tactics.json` | Seed data: 14 MITRE ATT&CK enterprise tactic IDs and descriptions |
+| `outputs/` | Generated scenario JSON files (gitignored except `.gitkeep`) |
+
+---
+
 ## Code Generation Method
 
 During the creation of this project a combination of spec-driven development and iterative promting were used. A SPEC.md file and AGENTS.md file were used as the sources of truth to drive a spec-driven development workflow, combined with iterative prompting to drive a coding agent through the implementation one artifact at a time with human review at each step.
