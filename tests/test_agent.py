@@ -17,9 +17,10 @@ from src.tools.scenario_tools import lookup_mitre_tactic, suggest_tools, validat
 VALID_SCENARIO_DICT = {
     "title": "Ransomware Detection & Response",
     "difficulty": "intermediate",
+    "mitre_tactics": ["TA0001", "TA0002", "TA0008", "TA0040"],
     "red_team": {
         "objective": "Encrypt critical files and exfiltrate data before detection",
-        "mitre_tactics": ["TA0002", "TA0040"],
+        "mitre_tactics": ["TA0002", "TA0008", "TA0040"],
         "steps": [
             "Establish initial access via phishing email",
             "Move laterally using PsExec",
@@ -29,6 +30,7 @@ VALID_SCENARIO_DICT = {
     },
     "blue_team": {
         "objective": "Detect the intrusion and contain the ransomware before full encryption",
+        "mitre_tactics": ["TA0001", "TA0002", "TA0008", "TA0040"],
         "steps": [
             "Monitor SIEM for anomalous login activity",
             "Isolate affected host from network",

@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import List, Literal, Optional
 from pydantic import BaseModel, Field
 
 class RedTeam(BaseModel):
@@ -9,6 +9,7 @@ class RedTeam(BaseModel):
 
 class BlueTeam(BaseModel):
     objective: str = Field(description="The main goal of the blue team (defender) in this scenario.")
+    mitre_tactics: List[str] = Field(description="List of MITRE ATT&CK tactic IDs the blue team is defending against.")
     steps: List[str] = Field(description="Ordered steps the blue team takes to detect and respond to the attack.")
     tools: List[str] = Field(description="Tools used by the blue team during detection and response.")
 
@@ -16,10 +17,13 @@ class Environment(BaseModel):
     os: str = Field(description="Operating system(s) present in the scenario environment.")
     network_topology: str = Field(description="Description of the network topology for the scenario.")
     services: List[str] = Field(description="List of key services running in the environment.")
+    software: List[str] = Field(default_factory=list, description="List of software packages or applications present in the environment.")
+    notes: Optional[str] = Field(default=None, description="Any additional notes or context about the environment.")
 
 class ScenarioSpec(BaseModel):
     title: str = Field(description="Short, descriptive scenario title.")
     difficulty: Literal["beginner", "intermediate", "advanced"] = Field(description="Scenario difficulty level: beginner, intermediate, or advanced.")
+    mitre_tactics: List[str] = Field(description="Top-level list of all MITRE ATT&CK tactic IDs covered across the full scenario.")
     red_team: RedTeam = Field(description="Red team (attacker) details for the scenario.")
     blue_team: BlueTeam = Field(description="Blue team (defender) details for the scenario.")
     environment: Environment = Field(description="Technical environment in which the scenario takes place.")
