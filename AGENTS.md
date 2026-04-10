@@ -8,7 +8,7 @@ This file gives AI coding agents (GitHub Copilot, Claude Code, Cursor, etc.) the
 
 A LangChain agent that takes a plain-language cybersecurity training objective and returns a structured scenario spec (JSON) describing steps, defender tasks, tools, MITRE ATT&CK tactics, and environment detials.
 
-THink of it as an AI that can draft a cybersecurity training lab brief from a one-sentence prompt.
+Think of it as an AI that can draft a cybersecurity training lab brief from a one-sentence prompt.
 
 ---
 
