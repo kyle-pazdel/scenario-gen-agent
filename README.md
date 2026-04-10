@@ -6,6 +6,16 @@ Think of it as an AI that can draft a cybersecurity training lab brief from a on
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+- [How It Works](#how-it-works)
+- [Quickstart](#quickstart)
+- [Project Structure](#project-structure)
+- [Code Generation Method](#code-generation-method)
+
+---
+
 ## Overview
 
 |                       |                                                                       |
