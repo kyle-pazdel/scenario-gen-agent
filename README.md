@@ -64,3 +64,29 @@ Verification Criteria:
 "Generate `src/agent.py`. Use the context from AGENTS.md and SPEC.md. Load environment variables with python-dotenv. Build the LLM in a `_build_llm()` function that reads `LLM_BACKEND` and `LLM_MODEL` from the environment and supports both `ChatOpenAI` (default) and `ChatAnthropic`. Create a ReAct agent using `create_react_agent` from LangGraph with the three tools from `src/tools/scenario_tools.py`. Expose a `run(objective: str) -> ScenarioSpec` function as the main entrypoint. The agent should use `SYSTEM_PROMPT` and `SCENARIO_GENERATION_PROMPT` imported from `src/prompts.py` - no inline prompt strings in this file. Parse the final agent response into a validated `ScenarioSpec` - strip markdown fences before parsing. Save the output to `/outputs/` as a JSON file named from a slug of the scenario title. Support running as a CLI script via `python -m src.agent` with the objective passed as a command line argument, with a default objective if none is provided."
 
 - Model Used: Claude Sonnet 4
+
+## Prompt 6 -
+
+"Generate `tests/test_agent.py` using pytest. No LLM calls — all tests should run without any API key.
+Write tests for:
+
+`ScenarioSpec` validates successfully with a complete valid object
+`ScenarioSpec` raises a validation error when `difficulty` is not one of the three valid literals
+`ScenarioSpec` raises a validation error when a required field like `blue_team` is missing
+`lookup_mitre_tactic` returns a result containing 'TA0008' when called with 'lateral movement'
+`lookup_mitre_tactic` returns all tactics (fallback behavior) when called with a nonsense keyword
+`validate_scenario` returns a JSON string where `status == 'valid'` for a correct scenario JSON string
+`validate_scenario` returns a JSON string where `status == 'error'` or contains an error key for malformed JSON
+`suggest_tools` returns a JSON list containing 'Mimikatz' when called with role='red' and tactic='credential access'
+`suggest_tools` returns a JSON list containing 'Splunk' when called with role='blue' and tactic='ransomware'
+
+Important: `validate_scenario` returns a JSON string with a `status` field - parse the return value with `json.loads()` before asserting.
+"
+
+- Model Used: Claude Sonnet 4
+
+## Prompt 7 -
+
+"Add verbose logging to the `run()` function in `src/agent.py` so we can see each agent step as it happens. Print a message when the agent starts, and print each tool call name and result as the agent invokes them. Use `print()` statements for simplicity."
+
+- Model Used: Claude Sonnet 4-6

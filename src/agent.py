@@ -9,8 +9,10 @@ from typing import Any
 from dotenv import load_dotenv
 
 # LangChain / LangGraph imports
-from langchain.chat_models import ChatOpenAI, ChatAnthropic
-from langgraph.agents import create_react_agent
+from langchain.agents import create_agent
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, ToolMessage
+from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 
 from src.prompts import SYSTEM_PROMPT, SCENARIO_GENERATION_PROMPT
 from src.scenario_schema import ScenarioSpec
@@ -81,16 +83,38 @@ def run(objective: str) -> ScenarioSpec:
     """
     llm = _build_llm()
 
+    print(f"\n[agent] Starting scenario generation...")
+    print(f"[agent] Objective: {objective}")
+    print(f"[agent] LLM backend: {llm.__class__.__name__}\n")
+
     # create agent with tools
-    agent = create_react_agent(
-        llm=llm,
+    agent = create_agent(
+        model=llm,
         tools=[lookup_mitre_tactic, suggest_tools, validate_scenario],
-        system_prompt=SYSTEM_PROMPT,
     )
 
     prompt = SCENARIO_GENERATION_PROMPT.format(objective=objective)
+    # Pass system prompt as first message, followed by the human objective
+    messages = [
+        SystemMessage(content=SYSTEM_PROMPT),
+        HumanMessage(content=prompt),
+    ]
     # run the agent to produce a response
-    raw_response = agent.run(prompt)
+    response = agent.invoke({"messages": messages})
+
+    # Log each intermediate step (tool calls and their results)
+    for msg in response["messages"]:
+        if isinstance(msg, AIMessage) and msg.tool_calls:
+            for tc in msg.tool_calls:
+                print(f"[tool call] {tc['name']}  args={tc['args']}")
+        elif isinstance(msg, ToolMessage):
+            # Truncate long results to keep the console readable
+            preview = msg.content[:300].replace("\n", " ")
+            ellipsis = "..." if len(msg.content) > 300 else ""
+            print(f"[tool result] ({msg.name})  {preview}{ellipsis}")
+
+    raw_response = response["messages"][-1].content
+    print(f"\n[agent] Generation complete. Parsing response...")
 
     # strip markdown fences if present
     cleaned = _strip_markdown_fences(raw_response)
