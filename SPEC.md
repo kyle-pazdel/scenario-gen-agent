@@ -96,7 +96,7 @@ User Input (objective string)
 
 ---
 
-# 4. Accceptance Criteria
+# 4. Acceptance Criteria
 
 - [ ] Agent accepts a plain-language objective and returns valid JSON
 - [ ] Output passes Pydantic validation against `ScenarioSpec`
