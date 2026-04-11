@@ -96,14 +96,49 @@ Important: `validate_scenario` returns a JSON string with a `status` field - par
 
 - Model Used: Claude Sonnet 4-6
 
-### Prompt 1
+### Prompt 1 -
 
 "Update `requirements.txt` to add the dependencies needed for v2 RAG functionality: faiss-cpu for the vector store and langchain-community which is required for LangChain's FAISS integration. Do not remove any existing dependencies."
 
 - Model Used: Claude Sonnet 4-6
 
-### Prompt 2
+### Prompt 2 -
 
 "Add `data/mitre_index/` to `.gitignore` so the FAISS index is never committed. Also add `scripts/__pycache__/`."
+
+- Model Used: Claude Sonnet 4-6
+
+### Prompt 3 -
+
+"Generate `scripts/build_index.py`. This is a one-time ingestion script that builds a FAISS vector index from the MITRE ATT&CK Enterprise dataset. It should:
+
+1. Download the Enterprise ATT&CK STIX JSON from `https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json`
+2. Parse and extract only objects where `type == 'attack-pattern'`
+3. Filter out any techniques where `x_mitre_deprecated == True` or `revoked == True`
+4. For each technique, extract: technique ID (from `external_references` where `source_name == 'mitre-attack')`, name, tactic phases (from `kill_chain_phases`), description, detection field (`x_mitre_detection`), and mitigation summary if available
+5. Embed each technique as a single concatenated string: `{id} {name} {tactic_phases} {description} {detection}`
+6. Use OpenAI `text-embedding-3-small` via `langchain-openai` for embeddings
+7. Build a FAISS index from the embeddings using `langchain-community`
+8. Save the FAISS index to `data/mitre_index/`
+9. Save technique metadata as a JSON file to `data/mitre_index/techniques_metadata.json` — a list of dicts, each with keys: `id`, `name`, `tactics`, `description`, `detection`
+10. Print progress as it runs — number of techniques found, filtered, embedded
+
+Load `OPENAI_API_KEY` from `.env` using `python-dotenv`. The script should be runnable as python `scripts/build_index.py.`"
+
+- Model Used: Claude Sonnet 4-6
+
+Prompt 4 -
+
+"Generate `src/tools/rag_tool.py`. This file should contain a single LangChain @tool function called `lookup_mitre_technique(query: str) -> str`.
+Requirements:
+
+Load the FAISS index from `data/mitre_index`/ and the technique metadata from `data/mitre_index/techniques_metadata.json` once at module level — not inside the tool function
+Use OpenAI `text-embedding-3-small` for query embedding via `langchain-openai`
+Return the top 3 most semantically relevant techniques per query
+Each result should include: technique ID, name, tactic phases, description, detection guidance
+Return results as a formatted JSON string
+The tool docstring must clearly describe when the agent should use it — this is what the agent reads to decide when to call it
+Handle the case where the index hasn't been built yet with a clear error message telling the user to run `scripts/build_index.py`
+Load `OPENAI_API_KEY` from environment using `python-dotenv`"
 
 - Model Used: Claude Sonnet 4-6
