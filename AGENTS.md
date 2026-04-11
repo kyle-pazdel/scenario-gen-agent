@@ -24,14 +24,17 @@ Think of it as an AI that can draft a cybersecurity training lab brief from a on
 
 ## File Map
 
-| File                          | Purpose                                                                |
-| ----------------------------- | ---------------------------------------------------------------------- |
-| `src/agent.py`                | Agent initialization and `run(objective: str)` entrypoint              |
-| `src/scenario_schema.py`      | Pydantic models - `ScenarioSpec`, `RedTeam`, `BlueTeam`, `Environment` |
-| `src/prompts.py`              | All prompt templates - do not inline prompts in agent.py               |
-| `src/tools/scenario_tools.py` | LangChain `@tool` functions the agent can call                         |
-| `data/mitre_tactics.json`     | Seed data: MITRE ATT&CK tactic IDs and descriptions                    |
-| `outputs/`                    | Generated scenario JSON files (gitignored except .gitkeep)             |
+| File                          | Purpose                                                                          |
+| ----------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `src/agent.py`                | Agent initialization and `run(objective: str)` entrypoint                        |
+| `src/scenario_schema.py`      | Pydantic models — `ScenarioSpec`, `RedTeam`, `BlueTeam`, `Environment`           |
+| `src/prompts.py`              | All prompt templates — do not inline prompts in agent.py                         |
+| `src/tools/scenario_tools.py` | `validate_scenario` and `suggest_tools` — `lookup_mitre_tactic` has been removed |
+| `src/tools/rag_tool.py`       | New — `lookup_mitre_technique` RAG tool using FAISS                              |
+| `scripts/build_index.py`      | One-time ingestion script — run before first use                                 |
+| `data/mitre_tactics.json`     | Legacy seed data — no longer used by the agent in v2                             |
+| `data/mitre_index/`           | Gitignored — FAISS index and technique metadata live here                        |
+| `outputs/`                    | Generated scenario JSON files (gitignored except .gitkeep)                       | Add this new section after your existing Coding Conventions: |
 
 ---
 
@@ -45,9 +48,35 @@ Think of it as an AI that can draft a cybersecurity training lab brief from a on
 
 ---
 
-## Environment Variables
+## v2 RAG Conventions
+
+- `lookup_mitre_technique` is the ONLY MITRE lookup tool in v2.
+  `lookup_mitre_tactic` has been removed. Do not re-introduce it.
+
+- The FAISS index is loaded once at module level in `src/tools/rag_tool.py`,
+  not inside the tool function. This avoids reloading the index on every
+  agent call.
+
+- Technique metadata is stored separately in
+  `data/mitre_index/techniques_metadata.json` — a dict keyed by technique ID.
+  The FAISS index stores integer indices that map back to this metadata file.
+
+- The ingestion script (`scripts/build_index.py`) is a one-time setup step.
+  It is not called by `agent.py` at runtime under any circumstances.
+
+- Embeddings use OpenAI `text-embedding-3-small`. The same `OPENAI_API_KEY`
+  from `.env` is used — no new environment variables required.
+
+- Each technique is embedded as a single string combining:
+  ID + name + tactic phase + description + detection + mitigation.
+  This gives the vector search the richest possible signal.
+
+- Return the top 3 most relevant techniques per query. Do not return more —
+  the agent's context window fills quickly with MITRE data.
 
 ---
+
+## Environment Variables
 
 ```
 OPENAI_API_KEY=...
@@ -64,3 +93,7 @@ LLM_MODEL=gpt-4o     # override model if needed
 - Do not build a web UI in v1 (CLI only).
 - Do not use deprecated LangChain v0.1 patterns (`LLMChain`, `initialize_agent`). Use LangGraph or the modern `create_react_agent` pattern.
 - Do not commit `.env` or any file in `outputs/` (except `.gitkeep`).
+- Do not re-introduce `lookup_mitre_tactic` — it has been intentionally
+  replaced by `lookup_mitre_technique`.
+- Do not call `scripts/build_index.py` from within `agent.py` or any
+  src/ file — ingestion is a one-time offline step only.
