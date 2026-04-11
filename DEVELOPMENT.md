@@ -154,3 +154,9 @@ Load `OPENAI_API_KEY` from environment using `python-dotenv`"
 "Update `src/agent.py` to replace `lookup_mitre_tactic` with `lookup_mitre_technique` from `src/tools/rag_tool.py`. The tool list passed to `create_agent` should now be: `[lookup_mitre_technique, validate_scenario, suggest_tools]`. Update the import accordingly. Do not change any other logic in this file."
 
 - Model Used: Claude Sonnet 4-6
+
+### Prompt 7 -
+
+"Update `src/prompts.py` to reflect the v2 RAG tool. In `SYSTEM_PROMPT`, replace any reference to `lookup_mitre_tactic` with `lookup_mitre_technique`. Update the instruction to tell the agent that the technique lookup returns specific MITRE ATT&CK techniques (T-codes like T1003.001) with detection guidance — and that it should use these technique IDs and detection details in the generated scenario steps rather than just high-level tactic IDs."
+
+- Model Used: Claude Sonnet 4-6
