@@ -16,7 +16,8 @@ from langchain_anthropic import ChatAnthropic
 
 from src.prompts import SYSTEM_PROMPT, SCENARIO_GENERATION_PROMPT
 from src.scenario_schema import ScenarioSpec
-from src.tools.scenario_tools import lookup_mitre_tactic, validate_scenario, suggest_tools
+from src.tools.rag_tool import lookup_mitre_technique
+from src.tools.scenario_tools import validate_scenario, suggest_tools
 
 
 load_dotenv()
@@ -90,7 +91,7 @@ def run(objective: str) -> ScenarioSpec:
     # create agent with tools
     agent = create_agent(
         model=llm,
-        tools=[lookup_mitre_tactic, suggest_tools, validate_scenario],
+        tools=[lookup_mitre_technique, validate_scenario, suggest_tools],
     )
 
     prompt = SCENARIO_GENERATION_PROMPT.format(objective=objective)

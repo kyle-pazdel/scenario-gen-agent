@@ -127,7 +127,7 @@ Load `OPENAI_API_KEY` from `.env` using `python-dotenv`. The script should be ru
 
 - Model Used: Claude Sonnet 4-6
 
-Prompt 4 -
+### Prompt 4 -
 
 "Generate `src/tools/rag_tool.py`. This file should contain a single LangChain @tool function called `lookup_mitre_technique(query: str) -> str`.
 Requirements:
@@ -140,5 +140,17 @@ Return results as a formatted JSON string
 The tool docstring must clearly describe when the agent should use it — this is what the agent reads to decide when to call it
 Handle the case where the index hasn't been built yet with a clear error message telling the user to run `scripts/build_index.py`
 Load `OPENAI_API_KEY` from environment using `python-dotenv`"
+
+- Model Used: Claude Sonnet 4-6
+
+### Prompt 5 -
+
+"Update `src/tools/scenario_tools.py` to remove the `lookup_mitre_tactic` function entirely. Keep `validate_scenario` and `suggest_tools` unchanged. Do not modify any other logic."
+
+- Model Used: Claude Sonnet 4-6
+
+### Prompt 6 -
+
+"Update `src/agent.py` to replace `lookup_mitre_tactic` with `lookup_mitre_technique` from `src/tools/rag_tool.py`. The tool list passed to `create_agent` should now be: `[lookup_mitre_technique, validate_scenario, suggest_tools]`. Update the import accordingly. Do not change any other logic in this file."
 
 - Model Used: Claude Sonnet 4-6

@@ -1,14 +1,8 @@
 import json
-from pathlib import Path
-from typing import Any
-
 from langchain_core.tools import tool
 
 from pydantic import ValidationError
 from src.scenario_schema import ScenarioSpec
-
-# Path to MITRE ATT&CK seed data relative to project root
-_MITRE_TACTICS_PATH = Path(__file__).parents[2] / "data" / "mitre_tactics.json"
 
 # Curated sets of common red and blue team tools by tactic/technique
 _RED_TEAM_TOOLS: dict[str, list[str]] = {
@@ -50,33 +44,6 @@ _BLUE_TEAM_TOOLS: dict[str, list[str]] = {
     "phishing": ["Proofpoint", "Microsoft Defender for Office 365", "URLScan.io"],
     "default": ["Splunk", "Wireshark", "Sysmon", "Velociraptor", "Windows Event Logs"],
 }
-
-
-@tool
-def lookup_mitre_tactic(keyword: str) -> str:
-    """Look up MITRE ATT&CK tactics that match a given keyword.
-
-    Use this tool to find real MITRE ATT&CK tactic IDs and descriptions
-    relevant to the scenario you are building. Pass a keyword such as
-    'lateral movement', 'persistence', or 'exfiltration' to get matching
-    tactic IDs and descriptions from the official seed data.
-
-    Returns a JSON string listing all matching tactics with their ID, name,
-    and description. If no match is found, all tactics are returned.
-    """
-    with open(_MITRE_TACTICS_PATH, "r") as f:
-        tactics: dict[str, Any] = json.load(f)
-
-    keyword_lower = keyword.lower()
-    matches = {
-        tactic_id: tactic_data
-        for tactic_id, tactic_data in tactics.items()
-        if keyword_lower in tactic_data["name"].lower()
-        or keyword_lower in tactic_data["description"].lower()
-    }
-
-    result = matches if matches else tactics
-    return json.dumps(result, indent=2)
 
 
 @tool
