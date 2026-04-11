@@ -4,3 +4,5 @@ __pycache__/
 .pytest_cache/
 outputs/*.json
 .venv/
+data/mitre_index/
+scripts/__pycache__/

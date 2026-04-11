@@ -101,3 +101,9 @@ Important: `validate_scenario` returns a JSON string with a `status` field - par
 "Update `requirements.txt` to add the dependencies needed for v2 RAG functionality: faiss-cpu for the vector store and langchain-community which is required for LangChain's FAISS integration. Do not remove any existing dependencies."
 
 - Model Used: Claude Sonnet 4-6
+
+### Prompt 2
+
+"Add `data/mitre_index/` to `.gitignore` so the FAISS index is never committed. Also add `scripts/__pycache__/`."
+
+- Model Used: Claude Sonnet 4-6
