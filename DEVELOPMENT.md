@@ -86,3 +86,18 @@ Important: `validate_scenario` returns a JSON string with a `status` field - par
 "Add verbose logging to the `run()` function in `src/agent.py` so we can see each agent step as it happens. Print a message when the agent starts, and print each tool call name and result as the agent invokes them. Use `print()` statements for simplicity."
 
 - Model Used: Claude Sonnet 4-6
+
+## v2 RAG Implementation Feature: Code Generation Method
+
+### Load Context Prompt
+
+"I'm continuing development on my LangChain cybersecurity scenario generation agent. Here is my updated AGENTS.md and SPEC.md — treat these as the source of truth for everything you generate in this session."
+(pasted both files in chat as context)
+
+- Model Used: Claude Sonnet 4-6
+
+### Prompt 1
+
+"Update `requirements.txt` to add the dependencies needed for v2 RAG functionality: faiss-cpu for the vector store and langchain-community which is required for LangChain's FAISS integration. Do not remove any existing dependencies."
+
+- Model Used: Claude Sonnet 4-6
