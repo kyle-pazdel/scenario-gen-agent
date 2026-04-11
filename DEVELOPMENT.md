@@ -160,3 +160,9 @@ Load `OPENAI_API_KEY` from environment using `python-dotenv`"
 "Update `src/prompts.py` to reflect the v2 RAG tool. In `SYSTEM_PROMPT`, replace any reference to `lookup_mitre_tactic` with `lookup_mitre_technique`. Update the instruction to tell the agent that the technique lookup returns specific MITRE ATT&CK techniques (T-codes like T1003.001) with detection guidance — and that it should use these technique IDs and detection details in the generated scenario steps rather than just high-level tactic IDs."
 
 - Model Used: Claude Sonnet 4-6
+
+### Prompt 8 -
+
+"Update `tests/test_agent.py` for v2. Remove all tests for `lookup_mitre_tactic` since that tool has been removed. Add tests for `lookup_mitre_technique` that do not require the FAISS index to be built or the OpenAI API to be called — mock the index loading and embedding so the tool logic can be tested in isolation. Also add a test that verifies `lookup_mitre_technique` raises a clear error or returns an informative message when the index directory does not exist."
+
+- Model Used: Claude Sonnet 4-6
