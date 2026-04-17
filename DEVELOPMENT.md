@@ -2,7 +2,7 @@
 
 ## Code Generation Method
 
-During the creation of this project a combination of spec-driven development and iterative promting were used. A SPEC.md file and AGENTS.md file were used as the sources of truth to drive a spec-driven development workflow, combined with iterative prompting to drive a coding agent through the implementation one artifact at a time with human review at each step.
+During the creation of this project a combination of spec-driven development and iterative prompting were used. A SPEC.md file and AGENTS.md file were used as the sources of truth to drive a spec-driven development workflow, combined with iterative prompting to drive a coding agent through the implementation one artifact at a time with human review at each step.
 
 ### Load Context Prompt:
 
